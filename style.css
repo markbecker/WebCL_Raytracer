@@ -1,0 +1,67 @@
+@charset "utf-8";
+/* CSS Document */
+body {
+	background-color: #000;
+	font-family: Verdana, Geneva, sans-serif;
+	color: #CCC;
+	font-size: small;
+	margin-left: 0px;
+	margin-top: 15px;
+	margin-right: 0px;
+	margin-bottom: 0px;
+}
+#outputtextarea {
+	font-family: Verdana, Geneva, sans-serif;
+	font-size: x-small;
+	font-style: normal;
+	background-color: #444;
+	width: 286px;
+	height: 250px;
+	border-width: 2px;
+	border-radius:7px;
+	-moz-border-radius:7px; /* Firefox 3.6 and earlier */
+	border-style:solid;
+	color: #FFF;
+	padding: 5px;
+	border-color: #666;
+	line-height: 11px;
+}
+#divDeviceRadios, #divImageRadios {
+	font-family: Verdana, Geneva, sans-serif;
+	font-size: x-small;
+	font-style: normal;
+	color: #CCC;
+	width: 300px;
+}
+a {
+	color:#9CC;
+	text-decoration:none;
+	border-bottom-width:thin;
+	border-bottom-style:solid;
+}
+a:hover {
+	color:#F90;
+	text-shadow: 0 0 15px #F90;
+	border-bottom:none;
+	text-decoration:none;
+}
+.buttons {
+	padding:5px;
+	color:#FFF;
+	background-color: #666;
+	border-radius:7px;
+	-moz-border-radius:7px; /* Firefox 3.6 and earlier */
+}
+.genTd {
+	border-color: #666;
+	border-width: 2px 2px 2px 2px;
+	border-style: solid;
+	background-color: #333;
+	border-radius:9px;
+	-moz-border-radius:9px; /* Firefox 3.6 and earlier */
+}
+#divCanvasImg {
+	height: 603px;
+	width: 803px;
+	overflow: auto;	
+}
