@@ -2,42 +2,51 @@
 /* CSS Document */
 body {
 	background-color: #000;
-	font-family: Verdana, Geneva, sans-serif;
 	color: #CCC;
-	font-size: small;
-	margin-left: 0px;
-	margin-top: 15px;
-	margin-right: 0px;
-	margin-bottom: 0px;
+	font: small Verdana, Geneva, sans-serif;
+	margin: 7px 0px 0px 0px;
+}
+input[type="text"]{
+	font-size: x-small;
+	/*height:13px;*/
+	border: 1px solid #666;
+	border-radius: 4px;
+	-moz-border-radius:4px; /* Firefox 3.6 and earlier */
 }
 #outputtextarea {
-	font-family: Verdana, Geneva, sans-serif;
-	font-size: x-small;
-	font-style: normal;
-	background-color: #444;
-	width: 286px;
-	height: 250px;
-	border-width: 2px;
-	border-radius:7px;
-	-moz-border-radius:7px; /* Firefox 3.6 and earlier */
-	border-style:solid;
+	font: x-small Verdana, Geneva, sans-serif;
 	color: #FFF;
+	line-height: 11px;
+	background-color: #444;
+	width: 265px;
+	height: 250px;
 	padding: 5px;
-	border-color: #666;
+	border: 2px solid #666;
+	border-radius: 7px;
+	-moz-border-radius:7px; /* Firefox 3.6 and earlier */
+}
+#divImageRadios {
+	font: x-small Verdana, Geneva, sans-serif;
+	color: #CCC;
+	width: 130px;
 	line-height: 11px;
 }
-#divDeviceRadios, #divImageRadios {
-	font-family: Verdana, Geneva, sans-serif;
-	font-size: x-small;
-	font-style: normal;
+#divDeviceRadios {
+	font: x-small Verdana, Geneva, sans-serif;
 	color: #CCC;
-	width: 300px;
+	width: 280px;
+	line-height: 11px;
+}
+#divCanvasImg {
+	height: 603px;
+	width: 803px;
+	overflow: auto;
+	background-image: url(WebCL_Logo.jpg);
 }
 a {
 	color:#9CC;
 	text-decoration:none;
-	border-bottom-width:thin;
-	border-bottom-style:solid;
+	border-bottom: thin solid;
 }
 a:hover {
 	color:#F90;
@@ -45,23 +54,52 @@ a:hover {
 	border-bottom:none;
 	text-decoration:none;
 }
+.titleTd{
+	font: xx-large "Courier New", Courier, monospace;
+}
+.header{
+	font-size: medium;
+}
 .buttons {
-	padding:5px;
+	padding:1px;
 	color:#FFF;
 	background-color: #666;
 	border-radius:7px;
-	-moz-border-radius:7px; /* Firefox 3.6 and earlier */
+	-moz-border-radius:7px;
+}
+.dirButtonImage {	
+	border-radius:3px;
+	-moz-border-radius:3px;
+}
+.roundCornerImage {	
+	border-radius:7px;
+	-moz-border-radius:7px;
+}
+.dirButtons {
+	width: 24px;
+	height: 24px;
+	padding: 0px;
+	color:#FFF;
+	background-color: #666;
+	border-radius:7px;
+	-moz-border-radius:7px;
 }
 .genTd {
-	border-color: #666;
-	border-width: 2px 2px 2px 2px;
-	border-style: solid;
+	border: #000 3px solid;
+	background-color: #333;	
+	border-radius:12px;
+	-moz-border-radius:12px; /* Firefox 3.6 and earlier */
+	font-size: x-small;
+}
+.adjustTable{
+	font-size: x-small;
+	line-height: 11px;
+}
+.noSpaceTd{
+	border: 2px solid #000;
 	background-color: #333;
 	border-radius:9px;
 	-moz-border-radius:9px; /* Firefox 3.6 and earlier */
-}
-#divCanvasImg {
-	height: 603px;
-	width: 803px;
-	overflow: auto;	
+	font: x-small Verdana, Geneva, sans-serif;
+	padding: 0 0 0 0;
 }

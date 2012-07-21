@@ -8,18 +8,30 @@ var prim_list_buffer; //ArrayBuffer
 var prim_list_float32View;
 var n_primitives = 0;
 var sceneFileName = "scene1.txt";
+var camera_x = 0.0;
+var camera_y = 0.0;
+var camera_z = -7.0;
+var viewport_x = 6.0;
+var viewport_y = 4.5;
+var screenWidth = 800;
+var screenHeight = 600;
+var workItemSize = [16,16];
+var traceDepth = 5;
+var runCount = 1;
 
 function setupGUI(){
-	setupImageRadios();	;
-	setupDeviceRadios();		
+	setupImageRadios();
+	setupDeviceRadios();
+	document.chooseImage.image1.checked = true;
+	document.chooseDevice.device0_0.checked = true;
 }
 
 function setupImageRadios(){		
-	var imageStr = "<form name='chooseImage'><b>Choose image:</b><br/><br/>";
+	var imageStr = "<form name='chooseImage'><span class='header'>Choose&nbsp;Image:</span><br/><br/>";
 	// jump to index 1 b/c logo is image 0
 	for(var i = 1; i < arrSize; i++){
-		imageStr += "<input type='radio' value='" + i + "' name='images'>"
-					+ i + ". "+ imageNameArr[i];
+		imageStr += "<input type='radio' value='" + i + "' name='images' id='image" + i + "'>"
+					+ i + ". "+ imageNameArr[i].replace('.jpg','');
 		imageStr += "&nbsp;<canvas id='canvasRadioImg" + i + "' width=20 height=20 style='vertical-align: middle;'></canvas>";
 		(i < arrSize-1)? imageStr += "<br /><br />" : imageStr += "<br />";			
 	}		
@@ -30,7 +42,7 @@ function setupImageRadios(){
 	for(var i = 0; i < arrSize; i++){	
 		imageArr[i] = new Image();
 		if(i==0)
-			imageArr[i].onload = function(){setImagesToCanvas(this, "canvasImg");};
+			imageArr[i].onload = function(){};//setImagesToCanvas(this, "canvasImg");};
 		else		
 			imageArr[i].onload = function(){setImagesToCanvas(this, "canvasRadioImg");};
 		imageArr[i].src = imageNameArr[i];		
@@ -38,7 +50,7 @@ function setupImageRadios(){
 }
 
 function setupDeviceRadios(){
-	var deviceRadioStr = "<form name='chooseDevice'><b>Choose device:</b><br/><br/>";
+	var deviceRadioStr = "<form name='chooseDevice'><span class='header'>Choose&nbsp;Device:</span><br/><br/>";
 	try {			
 		if (checkWebCL()==false) {
 			return false;
@@ -55,9 +67,9 @@ function setupDeviceRadios(){
 				var dev = devices[j];
 				var deviceName = dev.getDeviceInfo(WebCL.CL_DEVICE_NAME);
 				deviceRadioStr += "&nbsp;<input type='radio' value='"
-					+ i + "," + j +	"' name='device'>"+j+". "+ deviceName +"<br/>";
+					+ i + "_" + j +	"' name='device' id='device"+ i + "_" + j +"'>"+j+". "+ deviceName +"<br/>";
 			}
-			deviceRadioStr += "<br/>";
+			//deviceRadioStr += "<br/>";
 		}
 	} catch(e) {
 		var output = document.getElementById ("output");
@@ -75,7 +87,7 @@ function setImagesToCanvas(img, canName){
 			var indexOfImg = imageArr.indexOf(img);
 			var can = document.getElementById(canName + indexOfImg);
 			var ctx = can.getContext("2d");
-			var longestSide = 60;
+			var longestSide = 50;
 			var scale = scaleWidth = scaleHeight = scaledW = scaledH = 0;
 			scaleWidth = longestSide / img.width;
 			scaleHeight = longestSide / img.height;
@@ -90,7 +102,7 @@ function setImagesToCanvas(img, canName){
 			var ctx = can.getContext("2d");
 			can.width = img.width;
 			can.height = img.height;
-			ctx.drawImage (img, 0, 0, img.width, img.height);				
+			ctx.drawImage (img, 0, 0, (img.width), (img.height));				
 		}
 	} catch(e) {
 		document.getElementById("output").innerHTML += "<h3>ERROR:</h3><pre style=\"color:red;\">" + e.message + "</pre>";
@@ -205,32 +217,138 @@ function createPrimList(){
 		
 		var x = 0;
 		var y = i * 24;
-		prim_list_float32View[y + x] = m_color[0]; x++;
-		prim_list_float32View[y + x] = m_color[1]; x++;
-		prim_list_float32View[y + x] = m_color[2]; x++;
-		prim_list_float32View[y + x] = m_color[3]; x++;
-		prim_list_float32View[y + x] = m_refl; x++;
-		prim_list_float32View[y + x] = m_diff; x++;
-		prim_list_float32View[y + x] = m_refr; x++;
-		prim_list_float32View[y + x] = m_refr_index; x++;
-		prim_list_float32View[y + x] = m_spec; x++;
-		prim_list_float32View[y + x] = dummy_3; x++;
-		prim_list_float32View[y + x] = type; x++;
-		prim_list_float32View[y + x] = is_light; x++;
-		prim_list_float32View[y + x] = normal[0]; x++;
-		prim_list_float32View[y + x] = normal[1]; x++;
-		prim_list_float32View[y + x] = normal[2]; x++;
-		prim_list_float32View[y + x] = normal[3]; x++;
-		prim_list_float32View[y + x] = center[0]; x++;
-		prim_list_float32View[y + x] = center[1]; x++;
-		prim_list_float32View[y + x] = center[2]; x++;
-		prim_list_float32View[y + x] = center[3]; x++;
-		prim_list_float32View[y + x] = depth; x++;
-		prim_list_float32View[y + x] = radius; x++;
-		prim_list_float32View[y + x] = sq_radius; x++;
-		prim_list_float32View[y + x] = r_radius; x++;			
+		prim_list_float32View[y + x] = m_color[0]; x++;		// 0
+		prim_list_float32View[y + x] = m_color[1]; x++;		// 1
+		prim_list_float32View[y + x] = m_color[2]; x++;		// 2
+		prim_list_float32View[y + x] = m_color[3]; x++;		// 3 always empty
+		prim_list_float32View[y + x] = m_refl; x++;			// 4
+		prim_list_float32View[y + x] = m_diff; x++;			// 5
+		prim_list_float32View[y + x] = m_refr; x++;			// 6
+		prim_list_float32View[y + x] = m_refr_index; x++;	// 7
+		prim_list_float32View[y + x] = m_spec; x++;			// 8
+		prim_list_float32View[y + x] = dummy_3; x++;		// 9
+		prim_list_float32View[y + x] = type; x++;			// 10
+		prim_list_float32View[y + x] = is_light; x++;		// 11
+		prim_list_float32View[y + x] = normal[0]; x++;		// 12
+		prim_list_float32View[y + x] = normal[1]; x++;		// 13
+		prim_list_float32View[y + x] = normal[2]; x++;		// 14
+		prim_list_float32View[y + x] = normal[3]; x++;		// 15 always empty
+		prim_list_float32View[y + x] = center[0]; x++;		// 16
+		prim_list_float32View[y + x] = center[1]; x++;		// 17
+		prim_list_float32View[y + x] = center[2]; x++;		// 18
+		prim_list_float32View[y + x] = center[3]; x++;		// 19 always empty
+		prim_list_float32View[y + x] = depth; x++;			// 20
+		prim_list_float32View[y + x] = radius; x++;			// 21
+		prim_list_float32View[y + x] = sq_radius; x++;		// 22
+		prim_list_float32View[y + x] = r_radius; x++;		// 23		
 	}
 	//alert("Yes " + prim_list_float32View[25]);
+}
+
+function moveScene(dir){
+	var y = 0;
+	if(dir=='Forward'){
+		for(var i = 0; i < n_primitives; i++){
+			y = i * 24;
+			if(prim_list_float32View[y + 10] > 0){ // any sphere
+				prim_list_float32View[y + 18] -= 5;
+			}else if(prim_list_float32View[y + 14] != 0){ //front or back plane
+				prim_list_float32View[y + 20] -= 5;
+			}
+		}	
+	}
+	if(dir=='Back'){
+		for(var i = 0; i < n_primitives; i++){
+			y = i * 24;
+			if(prim_list_float32View[y + 10] > 0){ // 0=Plane, 1=Sphere
+				prim_list_float32View[y + 18] += 5;
+			}else if(prim_list_float32View[y + 14] != 0){ //front or back plane			
+				prim_list_float32View[y + 20] += 5;
+			}
+		}	
+	}
+	if(dir=='Up'){
+		for(var i = 0; i < n_primitives; i++){
+			y = i * 24;
+			if(prim_list_float32View[y + 10] > 0){ // 0=Plane, 1=Sphere
+				prim_list_float32View[y + 17] -= 2;
+			}else if(prim_list_float32View[y + 13] == -1){ //top plane			
+				prim_list_float32View[y + 20] -= 2;
+			}else if(prim_list_float32View[y + 13] == 1){ //floor plane			
+				prim_list_float32View[y + 20] += 2;
+			}
+		}	
+	}
+	if(dir=='Down'){
+		for(var i = 0; i < n_primitives; i++){
+			y = i * 24;
+			if(prim_list_float32View[y + 10] > 0){ // 0=Plane, 1=Sphere
+				prim_list_float32View[y + 17] += 2;
+			}else if(prim_list_float32View[y + 13] == -1){ //top plane			
+				prim_list_float32View[y + 20] += 2;
+			}else if(prim_list_float32View[y + 13] == 1){ //floor plane			
+				prim_list_float32View[y + 20] -= 2;
+			}
+		}	
+	}
+	if(dir=='Left'){
+		for(var i = 0; i < n_primitives; i++){
+			y = i * 24;
+			if(prim_list_float32View[y + 10] > 0){ // 0=Plane, 1=Sphere
+				prim_list_float32View[y + 16] += 2;
+			}else if(prim_list_float32View[y + 12] == -1){ //left plane			
+				prim_list_float32View[y + 20] += 2;
+			}else if(prim_list_float32View[y + 12] == 1){ //right plane			
+				prim_list_float32View[y + 20] -= 2;
+			}
+		}	
+	}
+	if(dir=='Right'){
+		for(var i = 0; i < n_primitives; i++){
+			y = i * 24;
+			if(prim_list_float32View[y + 10] > 0){ // 0=Plane, 1=Sphere
+				prim_list_float32View[y + 16] -= 2;
+			}else if(prim_list_float32View[y + 12] == -1){ //left plane			
+				prim_list_float32View[y + 20] -= 2;
+			}else if(prim_list_float32View[y + 12] == 1){ //right plane			
+				prim_list_float32View[y + 20] += 2;
+			}
+		}
+	}
+	CL_outline(0); //will not load prims
+}
+
+function moveView(dir){	
+	if(dir=='Up' && camera_y > -5.0){
+		camera_y -= 1;
+		CL_outline(0); //will NOT load prims
+	}
+	if(dir=='Down' && camera_y < 5.0){
+		camera_y += 1;
+		CL_outline(0); //will NOT load prims
+	}
+	if(dir=='Left' && camera_x < 5.0){
+		camera_x += 1;
+		CL_outline(0); //will NOT load prims
+	}
+	if(dir=='Right' && camera_x > -5.0){
+		camera_x -= 1;
+		CL_outline(0); //will NOT load prims
+	}
+	if(dir=='ZoomIn' && camera_z > -15.0){
+		camera_z -= 2;
+		CL_outline(0); //will NOT load prims
+	}
+	if(dir=='ZoomOut' && camera_z < 1.0){
+		camera_z += 2;
+		CL_outline(0); //will NOT load prims
+	}
+	if(dir=='Reset'){
+		camera_x = 0;
+		camera_y = 0;
+		camera_z = -7.0;
+		CL_outline(1); //WILL load prims
+	}
 }
 
 function loadKernel(id){
@@ -245,7 +363,7 @@ function loadKernel(id){
 	return kernelSource;
 }
 
-function CL_outline () {		
+function CL_outline (loadPrims) {
 	var platformChosen = 1;
 	var deviceChosen = 0;
 	// All output is written to element by id "output"
@@ -283,25 +401,16 @@ function CL_outline () {
 		alert("Please choose a 'device'"); 
 		return;
 	}
-	var devRadValArr = devRadVal.split(",");
+	var devRadValArr = devRadVal.split("_");
 	var platformChosen = devRadValArr[0];
 	var deviceChosen = devRadValArr[1];
 	
 	output.innerHTML = "";	
 	
-	createPrimList();	
+	if(loadPrims==1){createPrimList();}	// load prims from file
+	//alert(loadPrims);
 	
-	try {		
-		//var camera_x = 0.0;
-		//var camera_y = 0.25;
-		//var camera_z = -7.5;
-		//var viewport_x = 6.0;
-		//var viewport_y = 4.5;		
-		var camera_x = 0.0;
-		var camera_y = 0.25;
-		var camera_z = -7.5;
-		var viewport_x = 6.0;
-		var viewport_y = 4.5;
+	try {
 		// Get pixel data from canvas
 		var canvasImg = document.getElementById("canvasImg");
 		var canvasImgCtx = canvasImg.getContext("2d");
@@ -386,15 +495,15 @@ function CL_outline () {
 		// added
 		cmdQueue.enqueueWriteBuffer (bufGlobalPrims, false, 0, bufSizeGlobalPrims, prim_list_float32View, []);
 		// Init ND-range 
-		var localWS = [16,4];  
+		var localWS = [16,8];  
 		var globalWS = [Math.ceil (intWidth / localWS[0]) * localWS[0], 
 						Math.ceil (intHeight / localWS[1]) * localWS[1]];
                  
-		outputStr += "\nwork group dimensions: " + globalWS.length;
+		outputStr += "\nWork group dimensions: " + globalWS.length;
 		for (var i = 0; i < globalWS.length; ++i)
-			outputStr += "\nglobal work item size[" + i + "]: " + globalWS[i];
+			outputStr += "\nGlobal work item size[" + i + "]: " + globalWS[i];
 		for (var i = 0; i < localWS.length; ++i)
-			outputStr += "\nlocal work item size[" + i + "]: " + localWS[i];				
+			outputStr += "\nLocal work item size[" + i + "]: " + localWS[i];				
 			
 		var dev = devices[deviceChosen];
 		var platName = "Platform: " +
@@ -411,15 +520,27 @@ function CL_outline () {
 			"Local Mem Size: " + (dev.getDeviceInfo(WebCL.CL_DEVICE_LOCAL_MEM_SIZE)/1024) + " KB\n\n" +
 			outputStr;		
                  
+		var startTime = Date.now();
 		// Execute (enqueue) kernel
-		cmdQueue.enqueueNDRangeKernel(kernel, globalWS.length, [], globalWS, localWS, []);
-		// Read the result buffer from OpenCL device
-		cmdQueue.enqueueReadBuffer (bufOut, false, 0, bufSizeImage, pixels.data, []);
-		cmdQueue.finish (); //Finish all the operations
-                 
-		canvasImgCtx.putImageData(pixels, 0, 0);
-		outputStr += "\nDone.";
-		output.innerHTML += outputStr;
+		var RunCountTF = document.getElementById("RunCount");
+		runCount = parseInt(RunCountTF.value);
+		if(runCount > 0 && runCount < 21){
+			for(var i = 0; i < runCount; i++){
+				cmdQueue.enqueueNDRangeKernel(kernel, globalWS.length, [], globalWS, localWS, []);
+			}
+			// Read the result buffer from OpenCL device
+			cmdQueue.enqueueReadBuffer (bufOut, false, 0, bufSizeImage, pixels.data, []);
+			cmdQueue.finish (); //Finish all the operations
+			var endTime = Date.now();
+			var runTime = (endTime - startTime)/1000;
+			runTime /= runCount;
+			canvasImgCtx.putImageData(pixels, 0, 0);
+			outputStr += "\nRun Time: " + runTime.toFixed(3) + " seconds (avg of " + runCount + " runs)\nDone.";
+			output.innerHTML += outputStr;
+		}else{
+			alert("Please set Number of Runs to integer value of 1 to 20"); 
+			return;			
+		}
 	} catch(e) {
 		document.getElementById("output").innerHTML += "<h3>ERROR:</h3><pre style=\"color:red;\">" + e.message + "</pre>";
 		throw e;
