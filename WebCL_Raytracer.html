@@ -10,12 +10,12 @@
 <body onLoad="setupGUI()">
 <table width="1000" border="0" align="center" cellpadding="0" cellspacing="0">
   <tr>
-    <td align="left" valign="top"><table align="center" cellpadding="6" cellspacing="0">
+    <td align="left" valign="top"><table align="center" cellpadding="6" cellspacing="6">
         <tr>
           <td colspan="2" class="genTd"><div id="divDeviceRadios"></div></td>
         </tr>
         <tr>
-          <td align="center" valign="top" class="genTd"><div id="divImageRadios"></div></td>
+          <td align="left" valign="top" class="genTd"><div id="divImageRadios"></div></td>
           <form name='moveSceneForm'>
             <td align="center" valign="top" class="genTd"><table border="0" cellspacing="0" cellpadding="0">
                 <tr>
@@ -58,27 +58,61 @@
         <tr>
           <td colspan="2" valign="top" class="genTd"><table border="0" cellspacing="1" cellpadding="0">
               <tr>
-                <td width="95" nowrap class="adjustTable">Screen&nbsp;[W][H]</td>
+                <td colspan="4" class="header">Adjust&nbsp;Run:</td>
+              </tr>
+              <tr>
+                <td width="95" nowrap class="adjustTable"><div id="divScreenSizeLabel">Screen&nbsp;[W][H]</div></td>
                 <td class="adjustTable"><input name="Width" id="Width" value="800" type="text" size="3" maxlength="4"></td>
-                <td width="45" nowrap class="adjustTable"><input name="Height" id="Height" value="600" type="text" size="3" maxlength="4"></td>
-                <td rowspan="4" align="left" valign="top" class="adjustTable">Screen size multiple of Work Items</td>
+                <td class="adjustTable"><input name="Height" id="Height" value="600" type="text" size="3" maxlength="4"></td>
+                <td rowspan="4" align="left" valign="top" class="adjustTable"><div id="divScreenSizeLimitaionsLabel">100-1600<br>
+                    Screen size multiple of Work Items</div></td>
               </tr>
               <tr>
-                <td width="95" nowrap class="adjustTable">Work&nbsp;Item&nbsp;Size</td>
+                <td width="95" nowrap class="adjustTable"><div id="divWorkItemSizeLabel">Work&nbsp;Item&nbsp;Size</div></td>
                 <td class="adjustTable"><input name="WorkItem0" id="WorkItem0" value="16" type="text" size="1" maxlength="2"></td>
-                <td width="45" nowrap class="adjustTable"><input name="WorkItem1" id="WorkItem1" value="16" type="text" size="1" maxlength="2"></td>
+                <td class="adjustTable"><input name="WorkItem1" id="WorkItem1" value="8" type="text" size="1" maxlength="2"></td>
               </tr>
               <tr>
-                <td width="95" nowrap class="adjustTable">Trace&nbsp;Depth</td>
+                <td width="95" nowrap class="adjustTable"><div id="divTraceDepthLabel">Trace&nbsp;Depth</div></td>
                 <td class="adjustTable"><input name="TraceDepth" id="TraceDepth" value="5" type="text" size="1" maxlength="1"></td>
-                <td width="45" nowrap class="adjustTable">(1-5)</td>
+                <td nowrap class="adjustTable">(0-5)</td>
               </tr>
               <tr>
-                <td width="95" nowrap class="adjustTable">Run&nbsp;Count</td>
+                <td width="95" nowrap class="adjustTable"><div id="divRunCountLabel">Run&nbsp;Count</div></td>
                 <td class="adjustTable"><input name="RunCount" id="RunCount" value="1" type="text" size="1" maxlength="2"></td>
-                <td width="45" nowrap class="adjustTable">(1-20)</td>
+                <td nowrap class="adjustTable">(1-20)</td>
               </tr>
-          </table></td>
+            </table></td>
+        </tr>
+        <tr>
+          <form name='builtInFunc'>
+            <td colspan="2" valign="top" class="genTd"><table border="0" cellspacing="0" cellpadding="0">
+                <tr>
+                  <td colspan="5" class="header">Built-in&nbsp;Functions:</td>
+                </tr>
+                <tr>
+                  <td class="adjustTable"><input name="BuiltInNormalize" type="checkbox" id="BuiltInNormalize" ></td>
+                  <td width="95" nowrap class="adjustTable">Built-In Normalize</td>
+                  <td class="adjustTable">&nbsp;&nbsp;</td>
+                  <td class="adjustTable"><input name="BuiltInDotProduct" type="checkbox" id="BuiltInDotProduct" ></td>
+                  <td width="95" nowrap class="adjustTable">Built-In Dot Product</td>
+                </tr>
+                <tr>
+                  <td class="adjustTable"><input name="FastNormalize" type="checkbox" id="FastNormalize" ></td>
+                  <td width="95" nowrap class="adjustTable">Fast Normalize</td>
+                  <td class="adjustTable">&nbsp;&nbsp;</td>
+                  <td class="adjustTable"><input name="NativeSqrt" type="checkbox" id="NativeSqrt" ></td>
+                  <td width="95" nowrap class="adjustTable">Native Sqrt</td>
+                </tr>
+                <tr>
+                  <td class="adjustTable"><input name="BuiltInLength" type="checkbox" id="BuiltInLength" ></td>
+                  <td width="95" nowrap class="adjustTable">Built-In Length</td>
+                  <td class="adjustTable">&nbsp;&nbsp;</td>
+                  <td class="adjustTable">&nbsp;</td>
+                  <td class="adjustTable">&nbsp;</td>
+                </tr>
+              </table></td>
+          </form>
         </tr>
         <tr>
           <td colspan="2" align="center" valign="middle" class="genTd"><input type="button" value="Run Raytracer" onClick="CL_outline(1);" class="buttons"></td>
@@ -87,28 +121,28 @@
           <td colspan="2" align="center" valign="top" class="genTd"><textarea name="outputtextarea" readonly="readonly" id="outputtextarea"></textarea></td>
         </tr>
       </table></td>
-    <td valign="top"><table border="0" align="center" cellpadding="6" cellspacing="0">
-        <tr>
-          <td class="genTd"><table width="700" border="0" align="right" cellpadding="3" cellspacing="0">
-              <tr>
-                <td class="titleTd">WebCL Raytracer</td>
-                <td class="adjustTable">By Mark&nbsp;Becker<br>
-                  <br>
-                  Kernel by<br>
-                  Mark Becker &amp; Cameron Brown</td>
-                <td align="right" valign="top"><img src="WebCL_Logo_sm.jpg" width="118" height="60"></td>
-              </tr>
-            </table></td>
-        </tr>
-        <tr>
-          <form name='moveSceneForm'>
-          </form>
-          <td valign="top" class="genTd"><div id="divCanvasImg">
-              <canvas id="canvasImg" width='800' height='600'></canvas>
-            </div>
-            <img id="srcImg" style="display:none;"></td>
-        </tr>
-      </table></td>
+    <td valign="top"><div class="rightDiv">
+        <table border="0" align="center" cellpadding="6" cellspacing="6">
+          <tr>
+            <td class="noSpaceTd"><table width="700" border="0" align="right" cellpadding="3" cellspacing="0">
+                <tr>
+                  <td class="titleTd">WebCL Raytracer</td>
+                  <td class="adjustTable">By Mark&nbsp;Becker<br>
+                    <br>
+                    Kernel by<br>
+                    Mark Becker &amp; Cameron Brown</td>
+                  <td align="right" valign="top"><img src="WebCL_Logo_sm.jpg" width="118" height="60"></td>
+                </tr>
+              </table></td>
+          </tr>
+          <tr>
+            <td valign="top" class="genTd"><div id="divCanvasImg">
+                <canvas id="canvasImg" width='800' height='600'></canvas>
+              </div>
+              <img id="srcImg" style="display:none;"></td>
+          </tr>
+        </table>
+      </div></td>
   </tr>
 </table>
 <br />

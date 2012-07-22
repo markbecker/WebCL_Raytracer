@@ -6,8 +6,14 @@ var arrSize = imageNameArr.length;
 var prim_list_raw = new Array();
 var prim_list_buffer; //ArrayBuffer
 var prim_list_float32View;
-var n_primitives = 0;
 var sceneFileName = "scene1.txt";
+var builtInFuncStr = "";
+
+var n_primitives = 0;
+
+// default settings
+var platformChosen = 0;
+var deviceChosen = 0;
 var camera_x = 0.0;
 var camera_y = 0.0;
 var camera_z = -7.0;
@@ -15,13 +21,14 @@ var viewport_x = 6.0;
 var viewport_y = 4.5;
 var screenWidth = 800;
 var screenHeight = 600;
-var workItemSize = [16,16];
+var workItemSize = [16,8];
 var traceDepth = 5;
 var runCount = 1;
 
 function setupGUI(){
 	setupImageRadios();
 	setupDeviceRadios();
+	// default radio button chosen
 	document.chooseImage.image1.checked = true;
 	document.chooseDevice.device0_0.checked = true;
 }
@@ -363,15 +370,8 @@ function loadKernel(id){
 	return kernelSource;
 }
 
-function CL_outline (loadPrims) {
-	var platformChosen = 1;
-	var deviceChosen = 0;
-	// All output is written to element by id "output"
-	var output = document.getElementById("outputtextarea");
-	var outputStr = "";
-	
-	// Collect chosen image
-	// or return alert box		
+function checkImagRadioBtns(){
+	// Collect chosen image or return alert box		
 	var imgRadioBtn = document.chooseImage.images;
 	var imgRadioBtnCnt = imgRadioBtn.length;
 	var imgRadVal = -1;
@@ -382,11 +382,14 @@ function CL_outline (loadPrims) {
 	}
 	if(imgRadVal <= -1){
 		alert("Please choose a 'image'"); 
-		return;
+		return false;
 	}
 	//setImagesToCanvas(imageArr[imgRadVal], "canvasImg"); 
 	sceneFileName = "scene"+ imgRadVal + ".txt";
-		
+	return true;
+}
+
+function checkDevRadioBtns(){	
 	// Collect chosen device selected
 	// or return alert box
 	var devRadioBtn = document.chooseDevice.device;
@@ -399,36 +402,175 @@ function CL_outline (loadPrims) {
 	}
 	if(!(devRadVal.length > 0)){
 		alert("Please choose a 'device'"); 
-		return;
+		return false;
 	}
 	var devRadValArr = devRadVal.split("_");
-	var platformChosen = devRadValArr[0];
-	var deviceChosen = devRadValArr[1];
+	platformChosen = parseInt(devRadValArr[0]);
+	deviceChosen = parseInt(devRadValArr[1]);
+	return true;
+}
+
+function checkAdjustRunValues(){
+	//Check the "Adjust Run" values
+	// Create error string	
+	var wasError = false;
+	var errorStr = "Error:\n";
+	var baseColor = "#AEE";
+	var errorTextColor = "#F66";
 	
-	output.innerHTML = "";	
+	var AdjustRunTF = document.getElementById("Width");
+	screenWidth = parseInt(AdjustRunTF.value);
+	AdjustRunTF = document.getElementById("Height");
+	screenHeight = parseInt(AdjustRunTF.value);
+	var labelElem = document.getElementById("divScreenSizeLabel");
+	labelElem.style.color = baseColor;
+	if((!(screenWidth >= 100 && screenWidth <= 1600)) || (!(screenHeight >= 100 && screenHeight <= 1600))){
+		errorStr += "Please set Screen Width and Height to integer value of 100 to 1600\n";	
+		labelElem.style.color = errorTextColor;
+		wasError = true;
+	}
+	
+	AdjustRunTF = document.getElementById("WorkItem0");
+	workItemSize[0] = parseInt(AdjustRunTF.value);
+	AdjustRunTF = document.getElementById("WorkItem1");
+	workItemSize[1] = parseInt(AdjustRunTF.value);	
+	labelElem = document.getElementById("divWorkItemSizeLabel");
+	labelElem.style.color = baseColor;	
+	if((!(workItemSize[0] >= 2 && workItemSize[0] <= 64)) || (!(workItemSize[1] >= 2 && workItemSize[1] <= 64))){
+		errorStr += "Please set Work Item [0] and Work Item [1] to integer value of 2 to 64\n"; 	
+		labelElem.style.color = errorTextColor;
+		wasError = true;
+	}
+	
+	labelElem = document.getElementById("divWorkItemSizeLabel");
+	labelElem.style.color = baseColor;	
+	if((screenWidth % workItemSize[0] != 0) || (screenHeight % workItemSize[1] != 0)){
+		errorStr += "Please set Screen Size to be a multiple of Work Items\n"; 
+		labelElem.style.color = errorTextColor;
+		wasError = true;
+	}
+		
+	AdjustRunTF = document.getElementById("TraceDepth");
+	traceDepth = parseInt(AdjustRunTF.value);
+	labelElem = document.getElementById("divTraceDepthLabel");
+	labelElem.style.color = baseColor;	
+	if(!(traceDepth >= 0 && traceDepth <= 5)){
+		errorStr += "Please set Trace Depth to integer value of 0 to 5\n"; 
+		labelElem.style.color = errorTextColor;
+		wasError = true;
+	}else{
+		switch(traceDepth)
+		{
+		case 5:
+			builtInFuncStr += "-DD_TRACEDEPTH_5 ";
+			break;
+		case 4:
+			builtInFuncStr += "-DD_TRACEDEPTH_4 ";
+			break;
+		case 3:
+			builtInFuncStr += "-DD_TRACEDEPTH_3 ";
+			break;
+		case 2:
+			builtInFuncStr += "-DD_TRACEDEPTH_2 ";
+			break;
+		case 1:
+			builtInFuncStr += "-DD_TRACEDEPTH_1 ";
+			break;
+		case 0:
+			builtInFuncStr += "-DD_TRACEDEPTH_0 ";
+			break;
+		default:
+			builtInFuncStr += "-DD_TRACEDEPTH_5 ";
+			break;
+		}
+	}
+	
+	AdjustRunTF = document.getElementById("RunCount")
+	runCount = parseInt(AdjustRunTF.value);
+	labelElem = document.getElementById("divRunCountLabel");
+	labelElem.style.color = baseColor;	
+	if(!(runCount >= 1 && runCount <= 20)){
+		errorStr += "Please set Number of Runs to integer value of 1 to 20\n"; 
+		labelElem.style.color = errorTextColor;
+		wasError = true;
+	}
+	
+	if(wasError){
+		alert(errorStr);
+		return false;		
+	}else{
+		return true;
+	}
+}
+
+function checkBuiltInFunctionValue(){
+	// Collect chosen device selected
+	// or return alert box
+	var form = document.builtInFunc;
+	if(form.BuiltInNormalize.checked || form.FastNormalize.checked){
+		(form.BuiltInNormalize.checked)?builtInFuncStr += "-DD_BUILTIN_NORMALIZE ":builtInFuncStr += "-DD_FAST_NORMALIZE ";
+	}
+	if(form.BuiltInDotProduct.checked){builtInFuncStr += "-DD_BUILTIN_DOT ";}
+	if(form.NativeSqrt.checked){builtInFuncStr += "-DD_NATIVE_SQRT ";}
+	if(form.BuiltInLength.checked){builtInFuncStr += "-DD_BUILTIN_LEN ";}
+}
+
+function CL_outline (loadPrims) {	
+	builtInFuncStr = "";	
+	platformChosen = 0;
+	deviceChosen = 0;
+	camera_x = 0.0;
+	camera_y = 0.0;
+	camera_z = -7.0;
+	viewport_x = 6.0;
+	viewport_y = 4.5;
+	screenWidth = 800;
+	screenHeight = 600;
+	workItemSize = [16,8];
+	traceDepth = 5;
+	runCount = 1;
+	
+	// All output is written to element by id "output"
+	var output = document.getElementById("outputtextarea");
+	output.innerHTML = "Running";	
+	var outputStr = "";
+	
+	if(!checkImagRadioBtns()){ 
+		output.innerHTML = "Error: checkImagRadioBtns()"; 
+		return;
+	}
+	if(!checkDevRadioBtns()){ 
+		output.innerHTML = "Error: checkDevRadioBtns()"; 
+		return;
+	}
+	if(!checkAdjustRunValues()){ 
+		output.innerHTML = "Error: checkAdjustRunValues()"; 
+		return;
+	}	
+	
+	checkBuiltInFunctionValue();
 	
 	if(loadPrims==1){createPrimList();}	// load prims from file
-	//alert(loadPrims);
 	
 	try {
 		// Get pixel data from canvas
 		var canvasImg = document.getElementById("canvasImg");
+		canvasImg.width = screenWidth;
+		canvasImg.height = screenHeight;
 		var canvasImgCtx = canvasImg.getContext("2d");
-		var intWidth = canvasImg.width;
-		var intHeight = canvasImg.height;
-		var pixels = canvasImgCtx.getImageData(0, 0, intWidth, intHeight);
+		var pixels = canvasImgCtx.getImageData(0, 0, screenWidth, screenHeight);
 		// Dimm the existing canvas to highlight any errors we might get.
 		// This does not affect the already retrieved pixel data.
-		canvasImgCtx.fillStyle = "rgba(0,0,0,0.7)";
-		canvasImgCtx.fillRect(0, 0, intWidth, intHeight);
+		canvasImgCtx.fillStyle = "rgba(0,0,0,1)";
+		canvasImgCtx.fillRect(0, 0, screenWidth, screenHeight);
                  
 		// Setup WebCL context using the default device of the first available platform
 		var platforms = WebCL.getPlatformIDs();
 		//var ctx = WebCL.createContextFromType ([WebCL.CL_CONTEXT_PLATFORM, platforms[platformChosen]], WebCL.CL_DEVICE_TYPE_DEFAULT);
 		var ctx = WebCL.createContextFromType ([WebCL.CL_CONTEXT_PLATFORM, platforms[platformChosen]], WebCL.CL_DEVICE_TYPE_ALL);
 		// Setup buffers
-		var imgSize = intWidth * intHeight;
-		outputStr += "Image size: " + imgSize + " pixels ("	+ intWidth + " x " + intHeight + ")";
+		var imgSize = screenWidth * screenHeight;
+		outputStr += "Image size: " + imgSize + " pixels ("	+ screenWidth + " x " + screenHeight + ")";
 	
 		// "bufSizeImage = image * 4" broken down
 		// image = (w * h)
@@ -467,7 +609,7 @@ function CL_outline (loadPrims) {
 		var program = ctx.createProgramWithSource(kernelSrc);
 		var devices = ctx.getContextInfo(WebCL.CL_CONTEXT_DEVICES);
 		try {
-			program.buildProgram ([devices[deviceChosen]], "");
+			program.buildProgram ([devices[deviceChosen]], builtInFuncStr);
 		} catch(e) {
 			alert ("Failed to build WebCL program. Error "
 					+ program.getProgramBuildInfo (devices[deviceChosen], WebCL.CL_PROGRAM_BUILD_STATUS)
@@ -478,8 +620,8 @@ function CL_outline (loadPrims) {
 		var kernel = program.createKernel ("raytracer_kernel");
 		kernel.setKernelArg (0, bufIn);
 		kernel.setKernelArg (1, bufOut);
-		kernel.setKernelArg (2, intWidth, WebCL.types.UINT);
-		kernel.setKernelArg (3, intHeight, WebCL.types.UINT);
+		kernel.setKernelArg (2, screenWidth, WebCL.types.UINT);
+		kernel.setKernelArg (3, screenHeight, WebCL.types.UINT);
 		kernel.setKernelArg (4, parseFloat(camera_x), WebCL.types.FLOAT);
 		kernel.setKernelArg (5, parseFloat(camera_y), WebCL.types.FLOAT);
 		kernel.setKernelArg (6, parseFloat(camera_z), WebCL.types.FLOAT);
@@ -495,9 +637,9 @@ function CL_outline (loadPrims) {
 		// added
 		cmdQueue.enqueueWriteBuffer (bufGlobalPrims, false, 0, bufSizeGlobalPrims, prim_list_float32View, []);
 		// Init ND-range 
-		var localWS = [16,8];  
-		var globalWS = [Math.ceil (intWidth / localWS[0]) * localWS[0], 
-						Math.ceil (intHeight / localWS[1]) * localWS[1]];
+		var localWS = [workItemSize[0],workItemSize[1]];  
+		var globalWS = [Math.ceil (screenWidth / localWS[0]) * localWS[0], 
+						Math.ceil (screenHeight / localWS[1]) * localWS[1]];
                  
 		outputStr += "\nWork group dimensions: " + globalWS.length;
 		for (var i = 0; i < globalWS.length; ++i)
@@ -522,25 +664,18 @@ function CL_outline (loadPrims) {
                  
 		var startTime = Date.now();
 		// Execute (enqueue) kernel
-		var RunCountTF = document.getElementById("RunCount");
-		runCount = parseInt(RunCountTF.value);
-		if(runCount > 0 && runCount < 21){
-			for(var i = 0; i < runCount; i++){
-				cmdQueue.enqueueNDRangeKernel(kernel, globalWS.length, [], globalWS, localWS, []);
-			}
-			// Read the result buffer from OpenCL device
-			cmdQueue.enqueueReadBuffer (bufOut, false, 0, bufSizeImage, pixels.data, []);
-			cmdQueue.finish (); //Finish all the operations
-			var endTime = Date.now();
-			var runTime = (endTime - startTime)/1000;
-			runTime /= runCount;
-			canvasImgCtx.putImageData(pixels, 0, 0);
-			outputStr += "\nRun Time: " + runTime.toFixed(3) + " seconds (avg of " + runCount + " runs)\nDone.";
-			output.innerHTML += outputStr;
-		}else{
-			alert("Please set Number of Runs to integer value of 1 to 20"); 
-			return;			
+		for(var i = 0; i < runCount; i++){
+			cmdQueue.enqueueNDRangeKernel(kernel, globalWS.length, [], globalWS, localWS, []);
 		}
+		// Read the result buffer from OpenCL device
+		cmdQueue.enqueueReadBuffer (bufOut, false, 0, bufSizeImage, pixels.data, []);
+		cmdQueue.finish (); //Finish all the operations
+		var endTime = Date.now();
+		var runTime = (endTime - startTime)/1000;
+		runTime /= runCount;
+		canvasImgCtx.putImageData(pixels, 0, 0);
+		outputStr += "\nRun Time: " + runTime.toFixed(3) + " seconds (avg of " + runCount + " runs)\nDone.";
+		output.innerHTML = outputStr;
 	} catch(e) {
 		document.getElementById("output").innerHTML += "<h3>ERROR:</h3><pre style=\"color:red;\">" + e.message + "</pre>";
 		throw e;

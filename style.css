@@ -2,7 +2,7 @@
 /* CSS Document */
 body {
 	background-color: #000;
-	color: #CCC;
+	color: #AEE;
 	font: small Verdana, Geneva, sans-serif;
 	margin: 7px 0px 0px 0px;
 }
@@ -15,7 +15,7 @@ input[type="text"]{
 }
 #outputtextarea {
 	font: x-small Verdana, Geneva, sans-serif;
-	color: #FFF;
+	color: #AEE;
 	line-height: 11px;
 	background-color: #444;
 	width: 265px;
@@ -27,19 +27,19 @@ input[type="text"]{
 }
 #divImageRadios {
 	font: x-small Verdana, Geneva, sans-serif;
-	color: #CCC;
+	color: #AEE;
 	width: 130px;
 	line-height: 11px;
 }
 #divDeviceRadios {
 	font: x-small Verdana, Geneva, sans-serif;
-	color: #CCC;
+	color: #AEE;
 	width: 280px;
 	line-height: 11px;
 }
 #divCanvasImg {
-	height: 603px;
 	width: 803px;
+	height: 603px;
 	overflow: auto;
 	background-image: url(WebCL_Logo.jpg);
 }
@@ -79,27 +79,32 @@ a:hover {
 	width: 24px;
 	height: 24px;
 	padding: 0px;
-	color:#FFF;
+	color:#AEE;
 	background-color: #666;
 	border-radius:7px;
 	-moz-border-radius:7px;
-}
-.genTd {
-	border: #000 3px solid;
-	background-color: #333;	
-	border-radius:12px;
-	-moz-border-radius:12px; /* Firefox 3.6 and earlier */
-	font-size: x-small;
 }
 .adjustTable{
 	font-size: x-small;
 	line-height: 11px;
 }
+.genTd {
+	border: #666 2px solid;
+	background-color: #333;	
+	border-radius:12px;
+	-moz-border-radius:12px; /* Firefox 3.6 and earlier */
+	font-size: x-small;
+}
 .noSpaceTd{
-	border: 2px solid #000;
+	border: #666 2px solid;
 	background-color: #333;
-	border-radius:9px;
-	-moz-border-radius:9px; /* Firefox 3.6 and earlier */
+	border-radius:12px;
+	-moz-border-radius:12px; /* Firefox 3.6 and earlier */
 	font: x-small Verdana, Geneva, sans-serif;
-	padding: 0 0 0 0;
+	padding: 0px 0px 0px 0px;
+}
+.rightDiv{
+	position: relative;
+	left:-6px;
+	
 }
