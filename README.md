@@ -47,7 +47,8 @@
             <br />
             The <a href="http://webcl.nokiaresearch.com/faq.html" target="_blank">FAQ</a> for Nokia Research's WebCL
         </ol>
-        <br />
+      </ul>
+      <ul>
         <font size='4'><b>Runtime Environment Concerns</b></font>
         <ul>
           <li> This application runs directly on the GPU or CPU. With that in mind, pushing the adjustments,<br />
