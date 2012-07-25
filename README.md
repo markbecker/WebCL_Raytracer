@@ -67,8 +67,8 @@
         </tr>
         <tr>
           <td valign="top" colspan="2">Screen shot of page displayed:<br />
-            <a href="https://github.com/markbecker/WebCL_Raytracer/raw/master/screenshot1.png" target=blank><img border=1 src="https://github.com/markbecker/WebCL_Raytracer/raw/master/screenshot1.png" width="800" height="661" alt="Screenshot 1"/></a><br />
-            <a href="https://github.com/markbecker/WebCL_Raytracer/raw/master/screenshot1.png" target=blank>Click for larger</a><br />
+            <a href="https://github.com/markbecker/WebCL_Raytracer/raw/master/Graphics/screenshot1.png" target=blank><img border=1 src="https://github.com/markbecker/WebCL_Raytracer/raw/master/Graphics/screenshot1.png" width="800" height="661" alt="Screenshot 1"/></a><br />
+            <a href="https://github.com/markbecker/WebCL_Raytracer/raw/master/Graphics/screenshot1.png" target=blank>Click for larger</a><br />
             <br /></td>
         </tr>
         <tr>
@@ -80,8 +80,8 @@
               </ul>
             </ul></td>
           <td width="340" valign="top">Choose Device input section:<br />
-            <a href="https://github.com/markbecker/WebCL_Raytracer/raw/master/screenshot2.png" target=blank> <img border=1 src="https://github.com/markbecker/WebCL_Raytracer/raw/master/screenshot2.png" width="309" height="128" alt="Screenshot 2"/></a><br />
-            <a href="https://github.com/markbecker/WebCL_Raytracer/raw/master/screenshot2.png" target=blank>Click for raw image</a><br /></td>
+            <a href="https://github.com/markbecker/WebCL_Raytracer/raw/master/Graphics/screenshot2.png" target=blank> <img border=1 src="https://github.com/markbecker/WebCL_Raytracer/raw/master/Graphics/screenshot2.png" width="309" height="128" alt="Screenshot 2"/></a><br />
+            <a href="https://github.com/markbecker/WebCL_Raytracer/raw/master/Graphics/screenshot2.png" target=blank>Click for raw image</a><br /></td>
         </tr>
         <tr>
           <td width="470" valign="top"><ul>
@@ -97,8 +97,8 @@
               </ul>
             </ul></td>
           <td width="340" valign="top">Choose Image input section:<br />
-            <a href="https://github.com/markbecker/WebCL_Raytracer/raw/master/screenshot3.png" target=blank> <img border=1 src="https://github.com/markbecker/WebCL_Raytracer/raw/master/screenshot3.png" width="311" height="201" alt="Screenshot 3"/></a><br />
-            <a href="https://github.com/markbecker/WebCL_Raytracer/raw/master/screenshot3.png" target=blank>Click for raw image</a><br /></td>
+            <a href="https://github.com/markbecker/WebCL_Raytracer/raw/master/Graphics/screenshot3.png" target=blank> <img border=1 src="https://github.com/markbecker/WebCL_Raytracer/raw/master/Graphics/screenshot3.png" width="311" height="201" alt="Screenshot 3"/></a><br />
+            <a href="https://github.com/markbecker/WebCL_Raytracer/raw/master/Graphics/screenshot3.png" target=blank>Click for raw image</a><br /></td>
         </tr>
         <tr>
           <td width="470" valign="top"><ul>
@@ -109,8 +109,8 @@
               </ul>
             </ul></td>
           <td width="340" valign="top">Adjust Run input section:<br />
-            <a href="https://github.com/markbecker/WebCL_Raytracer/raw/master/screenshot4.png" target=blank> <img border=1 src="https://github.com/markbecker/WebCL_Raytracer/raw/master/screenshot4.png" width="309" height="123" alt="Screenshot 4"/></a><br />
-            <a href="https://github.com/markbecker/WebCL_Raytracer/raw/master/screenshot4.png" target=blank>Click for raw image</a><br /></td>
+            <a href="https://github.com/markbecker/WebCL_Raytracer/raw/master/Graphics/screenshot4.png" target=blank> <img border=1 src="https://github.com/markbecker/WebCL_Raytracer/raw/master/Graphics/screenshot4.png" width="309" height="123" alt="Screenshot 4"/></a><br />
+            <a href="https://github.com/markbecker/WebCL_Raytracer/raw/master/Graphics/screenshot4.png" target=blank>Click for raw image</a><br /></td>
         </tr>
         <tr>
           <td width="470" valign="top"><ul>
@@ -121,8 +121,8 @@
               </ul>
             </ul></td>
           <td width="340" valign="top">Adjust Run input section:<br />
-            <a href="https://github.com/markbecker/WebCL_Raytracer/raw/master/screenshot5.png" target=blank> <img border=1 src="https://github.com/markbecker/WebCL_Raytracer/raw/master/screenshot5.png" width="309" height="106" alt="Screenshot 5"/></a><br />
-            <a href="https://github.com/markbecker/WebCL_Raytracer/raw/master/screenshot5.png" target=blank>Click for raw image</a><br /></td>
+            <a href="https://github.com/markbecker/WebCL_Raytracer/raw/master/Graphics/screenshot5.png" target=blank> <img border=1 src="https://github.com/markbecker/WebCL_Raytracer/raw/master/Graphics/screenshot5.png" width="309" height="106" alt="Screenshot 5"/></a><br />
+            <a href="https://github.com/markbecker/WebCL_Raytracer/raw/master/Graphics/screenshot5.png" target=blank>Click for raw image</a><br /></td>
         </tr>
         <tr>
           <td width="470" valign="top"><ul>
@@ -132,8 +132,8 @@
               </ul>
             </ul></td>
           <td width="340" valign="top">Information output section:<br />
-            <a href="https://github.com/markbecker/WebCL_Raytracer/raw/master/screenshot6.png" target=blank> <img border=1 src="https://github.com/markbecker/WebCL_Raytracer/raw/master/screenshot6.png" width="309" height="295" alt="Screenshot 6"/></a><br />
-            <a href="https://github.com/markbecker/WebCL_Raytracer/raw/master/screenshot6.png" target=blank>Click for raw image</a><br /></td>
+            <a href="https://github.com/markbecker/WebCL_Raytracer/raw/master/Graphics/screenshot6.png" target=blank> <img border=1 src="https://github.com/markbecker/WebCL_Raytracer/raw/master/Graphics/screenshot6.png" width="309" height="295" alt="Screenshot 6"/></a><br />
+            <a href="https://github.com/markbecker/WebCL_Raytracer/raw/master/Graphics/screenshot6.png" target=blank>Click for raw image</a><br /></td>
         </tr>
         <tr>
           <td width="470" valign="top"><ul>
@@ -143,8 +143,8 @@
               </ul>
             </ul></td>
           <td width="340" valign="top">Scene created section:<br />
-            <a href="https://github.com/markbecker/WebCL_Raytracer/raw/master/screenshot7.png" target=blank> <img border=1 src="https://github.com/markbecker/WebCL_Raytracer/raw/master/screenshot7.png" width="333" height="252" alt="Screenshot 7"/></a><br />
-            <a href="https://github.com/markbecker/WebCL_Raytracer/raw/master/screenshot7.png" target=blank>Click for raw image</a></td>
+            <a href="https://github.com/markbecker/WebCL_Raytracer/raw/master/Graphics/screenshot7.png" target=blank> <img border=1 src="https://github.com/markbecker/WebCL_Raytracer/raw/master/Graphics/screenshot7.png" width="333" height="252" alt="Screenshot 7"/></a><br />
+            <a href="https://github.com/markbecker/WebCL_Raytracer/raw/master/Graphics/screenshot7.png" target=blank>Click for raw image</a></td>
         </tr>
       </table>
       <hr>
