@@ -8,16 +8,13 @@
       <ul>
         <font size='4'><b>Project description</b></font>
         <ul>
-          General-purpose computing on graphics processing units (GPGPU) is a relatively new field <br />
-          that uses the graphical processing unit’s (GPU) processing architecture. GPUs are normally <br />
-          used for computer graphic computation. We are using this many-core architecture to perform <br />
-          computations on very large data sets using the GPU’s parallelization capabilities.<br />
+          This project was created to explore the usage of the newly developed specification WebCL.<br />
+          A previously built project <a href"https://github.com/markbecker/OpenCL_Raytracer" target="_blank">OpenCL_Raytracer</a> was used as the basis for the application.<br />
+          Like OpenCL, WebCL allows for direct access to the many-core environment of the CPU <br />
+          and or GPU.<br />
           <br />
-          We designed and developed a ray tracer that demonstrates the OpenCL framework. <br />
-          A suite of benchmark tests were developed to compare relative run times. Benchmarks were <br />
-          run on these systems using native C code on the CPU, and OpenCL using both the CPU <br />
-          and GPU. The project had three main parts: building the ray tracer, utilizing the OpenCL <br />
-          framework, creating the benchmarks.
+          A ray tracer was developed and used to demonstrate the power of parallelization.<br />
+          <br />
         </ul>
         <br/>
         <font size='4'><b>Developed and tested on...</b></font>
@@ -35,7 +32,7 @@
       </ul>
       <hr>
       <ul>
-        <font size='4'><b>Runtime Enviornment</b></font><br />
+        <font size='4'><b>Runtime Environment</b></font><br />
         <ol>
           The easy part...
           <li>This web application can only be run on Firefox browser<br />
@@ -51,7 +48,7 @@
             The <a href="http://webcl.nokiaresearch.com/faq.html" target="_blank">FAQ</a> for Nokia Research's WebCL
         </ol>
         <br />
-        <font size='4'><b>Runtime Enviornment Concerns</b></font>
+        <font size='4'><b>Runtime Environment Concerns</b></font>
         <ul>
           <li> This application runs directly on the GPU or CPU. With that in mind, pushing the adjustments,<br />
             size, run count, may effect the computer it is run on. There was more than a few times that<br />
@@ -69,7 +66,7 @@
           <td width="340" valign="top">&nbsp;</td>
         </tr>
         <tr>
-          <td valign="top" colspan="2">Screenshot of page displayed:<br />
+          <td valign="top" colspan="2">Screen shot of page displayed:<br />
             <a href="https://github.com/markbecker/WebCL_Raytracer/raw/master/screenshot1.png" target=blank><img border=1 src="https://github.com/markbecker/WebCL_Raytracer/raw/master/screenshot1.png" width="800" height="661" alt="Screenshot 1"/></a><br />
             <a href="https://github.com/markbecker/WebCL_Raytracer/raw/master/screenshot1.png" target=blank>Click for larger</a><br />
             <br /></td>
@@ -117,25 +114,37 @@
         </tr>
         <tr>
           <td width="470" valign="top"><ul>
+              <font size='4'><b>Built-in Functions:</b></font><br />
+              <ul>
+                <li> The 'Built-in Functions' lets the user choose the different functions that OpenCL provides.
+                <li> OpenCL, therefore WebCL, allows for manufacturers to supply built-in, hardware based, functional units to handle some of the more common arithmetic operations. This should, in theory, increase the processing speed because the function is optimized for the hardware. Sometimes this is not the case. That is why the option is here, to test the differences.
+              </ul>
+            </ul></td>
+          <td width="340" valign="top">Adjust Run input section:<br />
+            <a href="https://github.com/markbecker/WebCL_Raytracer/raw/master/screenshot5.png" target=blank> <img border=1 src="https://github.com/markbecker/WebCL_Raytracer/raw/master/screenshot5.png" width="309" height="106" alt="Screenshot 5"/></a><br />
+            <a href="https://github.com/markbecker/WebCL_Raytracer/raw/master/screenshot5.png" target=blank>Click for raw image</a><br /></td>
+        </tr>
+        <tr>
+          <td width="470" valign="top"><ul>
               <font size='4'><b>Information Output:</b></font><br />
               <ul>
-                <li> The 'Infomation Output' is created after each run. The text is labeled to be self explanitory. Some of the information prestented is based on the enviornment the code (kernel) is run on. The other info is specifically concerning the indiviual run(s) as in average run time.
+                <li> The 'Information Output' is created after each run. The text is labeled to be self explanatory. Some of the information presented is based on the environment the code (kernel) is run on. The other info is specifically concerning the individual run(s) as in average run time.
               </ul>
             </ul></td>
           <td width="340" valign="top">Information output section:<br />
-            <a href="https://github.com/markbecker/WebCL_Raytracer/raw/master/screenshot5.png" target=blank> <img border=1 src="https://github.com/markbecker/WebCL_Raytracer/raw/master/screenshot5.png" width="309" height="295" alt="Screenshot 5"/></a><br />
-            <a href="https://github.com/markbecker/WebCL_Raytracer/raw/master/screenshot5.png" target=blank>Click for raw image</a><br /></td>
+            <a href="https://github.com/markbecker/WebCL_Raytracer/raw/master/screenshot6.png" target=blank> <img border=1 src="https://github.com/markbecker/WebCL_Raytracer/raw/master/screenshot6.png" width="309" height="295" alt="Screenshot 6"/></a><br />
+            <a href="https://github.com/markbecker/WebCL_Raytracer/raw/master/screenshot6.png" target=blank>Click for raw image</a><br /></td>
         </tr>
         <tr>
           <td width="470" valign="top"><ul>
               <font size='4'><b>Scene Created:</b></font><br />
               <ul>
-                <li> The largest section of the page is reserved for a displaying of the scene image created. The area is fixed to diplay a 800 by 600 image. Larger (and smaller) images can be created and scroll bars will be implimented accordingly.
+                <li> The largest section of the page is reserved for a displaying of the scene image created. The area is fixed to display a 800 by 600 image. Larger (and smaller) images can be created and scroll bars will be implemented accordingly.
               </ul>
             </ul></td>
           <td width="340" valign="top">Scene created section:<br />
-            <a href="https://github.com/markbecker/WebCL_Raytracer/raw/master/screenshot6.png" target=blank> <img border=1 src="https://github.com/markbecker/WebCL_Raytracer/raw/master/screenshot6.png" width="333" height="252" alt="Screenshot 6"/></a><br />
-            <a href="https://github.com/markbecker/WebCL_Raytracer/raw/master/screenshot6.png" target=blank>Click for raw image</a></td>
+            <a href="https://github.com/markbecker/WebCL_Raytracer/raw/master/screenshot7.png" target=blank> <img border=1 src="https://github.com/markbecker/WebCL_Raytracer/raw/master/screenshot7.png" width="333" height="252" alt="Screenshot 7"/></a><br />
+            <a href="https://github.com/markbecker/WebCL_Raytracer/raw/master/screenshot7.png" target=blank>Click for raw image</a></td>
         </tr>
       </table>
       <hr>
