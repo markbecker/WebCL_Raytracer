@@ -9,7 +9,7 @@
         <font size='4'><b>Project description</b></font>
         <ul>
           This project was created to explore the usage of the newly developed specification WebCL.<br />
-          A previously built project <a href"https://github.com/markbecker/OpenCL_Raytracer" target="_blank">OpenCL_Raytracer</a> was used as the basis for this application.<br />
+          A previously built project <a href="https://github.com/markbecker/OpenCL_Raytracer" target="_blank">OpenCL_Raytracer</a> was used as the basis for this application.<br />
           Like OpenCL, WebCL allows for direct access to the many-core environment of the CPU <br />
           and or GPU.<br />
           <br />
