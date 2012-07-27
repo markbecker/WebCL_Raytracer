@@ -322,39 +322,39 @@ function moveScene(dir){
 			}
 		}
 	}
-	CL_outline(0); //will not load prims
+	CL_ratrace(0); //will not load prims
 }
 
 function moveView(dir){	
 	if(dir=='Up' && camera_y > -5.0){
 		camera_y -= 1;
-		CL_outline(0); //will NOT load prims
+		CL_ratrace(0); //will NOT load prims
 	}
 	if(dir=='Down' && camera_y < 5.0){
 		camera_y += 1;
-		CL_outline(0); //will NOT load prims
+		CL_ratrace(0); //will NOT load prims
 	}
 	if(dir=='Left' && camera_x < 5.0){
 		camera_x += 1;
-		CL_outline(0); //will NOT load prims
+		CL_ratrace(0); //will NOT load prims
 	}
 	if(dir=='Right' && camera_x > -5.0){
 		camera_x -= 1;
-		CL_outline(0); //will NOT load prims
+		CL_ratrace(0); //will NOT load prims
 	}
 	if(dir=='ZoomIn' && camera_z > -15.0){
 		camera_z -= 2;
-		CL_outline(0); //will NOT load prims
+		CL_ratrace(0); //will NOT load prims
 	}
 	if(dir=='ZoomOut' && camera_z < 1.0){
 		camera_z += 2;
-		CL_outline(0); //will NOT load prims
+		CL_ratrace(0); //will NOT load prims
 	}
 	if(dir=='Reset'){
 		camera_x = 0;
 		camera_y = 0;
 		camera_z = -7.0;
-		CL_outline(1); //WILL load prims
+		CL_ratrace(1); //WILL load prims
 	}
 }
 
@@ -515,7 +515,7 @@ function checkBuiltInFunctionValue(){
 	if(form.BuiltInLength.checked){builtInFuncStr += "-DD_BUILTIN_LEN ";}
 }
 
-function CL_outline (loadPrims) {	
+function CL_ratrace (loadPrims) {	
 	builtInFuncStr = "";	
 	platformChosen = 0;
 	deviceChosen = 0;
