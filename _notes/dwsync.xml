@@ -1,18 +1,20 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <dwsync>
-<file name="WebCL_Raytracer.html" server="C:/inetpub/wwwroot/MarkABecker/" local="129878255410000000" remote="129878255410000000" />
+<file name="WebCL_Raytracer.html" server="C:/inetpub/wwwroot/MarkABecker/" local="129883135400813225" remote="129883135400000000" />
 <file name=".gitattributes" server="markabecker.net" local="129851219493114206" remote="129877265400000000" />
 <file name=".gitignore" server="markabecker.net" local="129851219493334228" remote="129877265400000000" />
-<file name="kernel.js" server="markabecker.net" local="129871267764145821" remote="129877265400000000" />
+<file name="kernel.js" server="markabecker.net" local="129879246804569769" remote="129883527000000000" />
 <file name="README.md" server="markabecker.net" local="129877261451214706" remote="129877265400000000" />
 <file name="scene1.jpg" server="markabecker.net" local="129872931015675004" remote="129877265400000000" />
-<file name="scene1.txt" server="markabecker.net" local="129872930127328427" remote="129877265400000000" />
+<file name="scene1.txt" server="markabecker.net" local="129883480736693002" remote="129883527000000000" />
 <file name="scene2.jpg" server="markabecker.net" local="129872931359288603" remote="129877265400000000" />
-<file name="scene2.txt" server="markabecker.net" local="129872911215490593" remote="129877265400000000" />
+<file name="scene2.txt" server="markabecker.net" local="129881682494194779" remote="129883527600000000" />
 <file name="scene3.jpg" server="markabecker.net" local="129872931745841097" remote="129877265400000000" />
 <file name="scene3.txt" server="markabecker.net" local="129872924014426645" remote="129877265400000000" />
-<file name="script.js" server="markabecker.net" local="129874107282364730" remote="129877265400000000" />
-<file name="style.css" server="markabecker.net" local="129873838454527733" remote="129877265400000000" />
+<file name="script.js" server="markabecker.net" local="129883526831756773" remote="129883527600000000" />
+<file name="style.css" server="markabecker.net" local="129883505393129220" remote="129883527600000000" />
 <file name="WebCL_Logo.jpg" server="markabecker.net" local="129871108540512142" remote="129877265400000000" />
-<file name="WebCL_Raytracer.html" server="markabecker.net" local="129877103985469810" remote="129877265400000000" />
+<file name="WebCL_Raytracer.html" server="markabecker.net" local="129883504081371572" remote="129883527600000000" />
+<file name="Copy of WebCL_Raytracer.html" server="markabecker.net" local="129878262814586990" remote="129883527000000000" />
+<file name="non_webcl.js" server="markabecker.net" local="129883379805861543" remote="129883527000000000" />
 </dwsync>

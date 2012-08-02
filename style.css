@@ -21,7 +21,7 @@ input[type="text"]{
 	width: 265px;
 	height: 250px;
 	padding: 5px;
-	border: 2px solid #666;
+	border: 1px solid #666;
 	border-radius: 7px;
 	-moz-border-radius:7px; /* Firefox 3.6 and earlier */
 }
@@ -59,6 +59,7 @@ a:hover {
 }
 .header{
 	font-size: medium;
+	line-height: 16px;
 }
 .buttons {
 	padding:1px;
@@ -88,23 +89,18 @@ a:hover {
 	font-size: x-small;
 	line-height: 11px;
 }
-.genTd {
-	border: #666 2px solid;
+.genTd,.noSpaceTd {
+	border: #666 1px solid;
 	background-color: #333;	
-	border-radius:12px;
-	-moz-border-radius:12px; /* Firefox 3.6 and earlier */
-	font-size: x-small;
+	border-radius:10px;
+	-moz-border-radius:9px; /* Firefox 3.6 and earlier */
+	font-size: x-small Verdana, Geneva, sans-serif;
 }
 .noSpaceTd{
-	border: #666 2px solid;
-	background-color: #333;
-	border-radius:12px;
-	-moz-border-radius:12px; /* Firefox 3.6 and earlier */
-	font: x-small Verdana, Geneva, sans-serif;
 	padding: 0px 0px 0px 0px;
 }
 .rightDiv{
 	position: relative;
-	left:-6px;
+	left:-4px;
 	
 }

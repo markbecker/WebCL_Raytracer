@@ -24,6 +24,10 @@ var screenHeight = 600;
 var workItemSize = [16,8];
 var traceDepth = 5;
 var runCount = 1;
+var run_non_webcl = false;
+var	comment = false;
+var	comment2 = false;
+var	comment3 = false;
 
 function setupGUI(){
 	setupImageRadios();
@@ -57,7 +61,9 @@ function setupImageRadios(){
 }
 
 function setupDeviceRadios(){
-	var deviceRadioStr = "<form name='chooseDevice'><span class='header'>Choose&nbsp;Device:</span><br/><br/>";
+	var deviceRadioStr = "<form name='chooseDevice'><span class='header'>Choose&nbsp;Device:</span><br/><br/>" + 
+				"<b>Javascript Only</b><br>" + 
+				"&nbsp;<input type='radio' value='99_0' name='device' id='device99_0'>0. Javascript Only (60+ sec runtimes)<br/><br/>";
 	try {			
 		if (checkWebCL()==false) {
 			return false;
@@ -76,7 +82,7 @@ function setupDeviceRadios(){
 				deviceRadioStr += "&nbsp;<input type='radio' value='"
 					+ i + "_" + j +	"' name='device' id='device"+ i + "_" + j +"'>"+j+". "+ deviceName +"<br/>";
 			}
-			//deviceRadioStr += "<br/>";
+			deviceRadioStr += "<br/>";
 		}
 	} catch(e) {
 		var output = document.getElementById ("output");
@@ -219,7 +225,7 @@ function createPrimList(){
 			center[2] = prim_list_raw[i].center_normal_z;
 			radius = prim_list_raw[i].radius_depth;
 			sq_radius = radius * radius;
-			r_radius = (1.0 / prim_list_raw[i].radius_depth);
+			r_radius = (1.0 / radius);
 		}
 		
 		var x = 0;
@@ -249,7 +255,6 @@ function createPrimList(){
 		prim_list_float32View[y + x] = sq_radius; x++;		// 22
 		prim_list_float32View[y + x] = r_radius; x++;		// 23		
 	}
-	//alert("Yes " + prim_list_float32View[25]);
 }
 
 function moveScene(dir){
@@ -407,6 +412,7 @@ function checkDevRadioBtns(){
 	var devRadValArr = devRadVal.split("_");
 	platformChosen = parseInt(devRadValArr[0]);
 	deviceChosen = parseInt(devRadValArr[1]);
+	(platformChosen == 99)?run_non_webcl = true: run_non_webcl = false;
 	return true;
 }
 
@@ -563,119 +569,156 @@ function CL_ratrace (loadPrims) {
 		// This does not affect the already retrieved pixel data.
 		canvasImgCtx.fillStyle = "rgba(0,0,0,1)";
 		canvasImgCtx.fillRect(0, 0, screenWidth, screenHeight);
-                 
-		// Setup WebCL context using the default device of the first available platform
-		var platforms = WebCL.getPlatformIDs();
-		//var ctx = WebCL.createContextFromType ([WebCL.CL_CONTEXT_PLATFORM, platforms[platformChosen]], WebCL.CL_DEVICE_TYPE_DEFAULT);
-		var ctx = WebCL.createContextFromType ([WebCL.CL_CONTEXT_PLATFORM, platforms[platformChosen]], WebCL.CL_DEVICE_TYPE_ALL);
-		// Setup buffers
-		var imgSize = screenWidth * screenHeight;
-		outputStr += "Image size: " + imgSize + " pixels ("	+ screenWidth + " x " + screenHeight + ")";
-	
-		// "bufSizeImage = image * 4" broken down
-		// image = (w * h)
-		// 4 = number of chars
-		// implicitly * 1 because char size = 1 * byte
-		var bufSizeImage = imgSize * 4; // size in bytes
 		
-		// m_color = [0.0,0.0,0.0,0.0];	 	16 bytes
-		// m_refl = 0.0; 					4 bytes
-		// m_diff = 0.0; 					4 bytes
-		// m_refr = 0.0; 					4 bytes
-		// m_refr_index = 0.0; 				4 bytes
-		// m_spec = 0.0; 					4 bytes
-		// dummy_3 = 0.0; 					4 bytes
-		// type = 0; 						4 bytes
-		// is_light = false; 				4 bytes change from 1 byte 
-		// normal = [0.0,0.0,0.0,0.0];	 	16 bytes
-		// center = [0.0,0.0,0.0,0.0];	 	16 bytes
-		// depth = 0.0; 					4 bytes
-		// radius = 0.0; 					4 bytes
-		// sq_radius = 0.0; 				4 bytes
-		// r_radius = 0.0; 					4 bytes
-		// 3 @ 16bytes, 12 @ 4bytes = 96bytes			
-		//var bufSizeGlobalPrims = n_primitives * ((3 * 16) + (11 * 4) + (1 * 1));			
-		var bufSizeGlobalPrims = n_primitives * 96;
-		//alert(n_primitives);			
 		
-		outputStr += "\nBuffer size: " + bufSizeImage + " bytes";
-                 
-		var bufIn = ctx.createBuffer (WebCL.CL_MEM_READ_ONLY, bufSizeImage);
-		var bufOut = ctx.createBuffer (WebCL.CL_MEM_WRITE_ONLY, bufSizeImage);
-		var bufGlobalPrims = ctx.createBuffer (WebCL.CL_MEM_READ_ONLY, bufSizeGlobalPrims);
-		//var bufLocalPrims = ctx.createBuffer (WebCL.CL_MEM_READ_WRITE, bufSizeGlobalPrims);
-		// Create and build program
-		var kernelSrc = loadKernel("clProgramRaytrace");
-		var program = ctx.createProgramWithSource(kernelSrc);
-		var devices = ctx.getContextInfo(WebCL.CL_CONTEXT_DEVICES);
-		try {
-			program.buildProgram ([devices[deviceChosen]], builtInFuncStr);
-		} catch(e) {
-			alert ("Failed to build WebCL program. Error "
-					+ program.getProgramBuildInfo (devices[deviceChosen], WebCL.CL_PROGRAM_BUILD_STATUS)
-					+ ":  " + program.getProgramBuildInfo (devices[deviceChosen], WebCL.CL_PROGRAM_BUILD_LOG));
-			throw e;
-		}
-		// Create kernel and set arguments
-		var kernel = program.createKernel ("raytracer_kernel");
-		kernel.setKernelArg (0, bufIn);
-		kernel.setKernelArg (1, bufOut);
-		kernel.setKernelArg (2, screenWidth, WebCL.types.UINT);
-		kernel.setKernelArg (3, screenHeight, WebCL.types.UINT);
-		kernel.setKernelArg (4, parseFloat(camera_x), WebCL.types.FLOAT);
-		kernel.setKernelArg (5, parseFloat(camera_y), WebCL.types.FLOAT);
-		kernel.setKernelArg (6, parseFloat(camera_z), WebCL.types.FLOAT);
-		kernel.setKernelArg (7, parseFloat(viewport_x), WebCL.types.FLOAT);
-		kernel.setKernelArg (8, parseFloat(viewport_y), WebCL.types.FLOAT);
-		kernel.setKernelArg (9, bufGlobalPrims);			
-		kernel.setKernelArg (10, n_primitives, WebCL.types.INT);
-		kernel.setKernelArgLocal (11, bufSizeGlobalPrims);	// requires the size for the local buffer ?	! ?	
-		// Create command queue using the first available device
-		var cmdQueue = ctx.createCommandQueue (devices[deviceChosen], 0);
-		// Write the buffer to OpenCL device memory
-		cmdQueue.enqueueWriteBuffer (bufIn, false, 0, bufSizeImage, pixels.data, []);
-		// added
-		cmdQueue.enqueueWriteBuffer (bufGlobalPrims, false, 0, bufSizeGlobalPrims, prim_list_float32View, []);
-		// Init ND-range 
-		var localWS = [workItemSize[0],workItemSize[1]];  
-		var globalWS = [Math.ceil (screenWidth / localWS[0]) * localWS[0], 
-						Math.ceil (screenHeight / localWS[1]) * localWS[1]];
-                 
-		outputStr += "\nWork group dimensions: " + globalWS.length;
-		for (var i = 0; i < globalWS.length; ++i)
-			outputStr += "\nGlobal work item size[" + i + "]: " + globalWS[i];
-		for (var i = 0; i < localWS.length; ++i)
-			outputStr += "\nLocal work item size[" + i + "]: " + localWS[i];				
+		//run_non_webcl = true;
+		if(run_non_webcl){
+			var h = 0;
+			var w = 0;
+			var hd = h + screenHeight;
+			var wd = w + screenWidth;
 			
-		var dev = devices[deviceChosen];
-		var platName = "Platform: " +
-						dev.getDeviceInfo(WebCL.CL_DEVICE_PLATFORM).getPlatformInfo(WebCL.CL_PLATFORM_NAME);			
-		platName = platName.replace(/ +/g, " ");
-		var devName = "Device: " + dev.getDeviceInfo(WebCL.CL_DEVICE_NAME);			
-		devName = devName.replace(/ +/g, " ");			
-		
-		outputStr =  "Scene File: " + sceneFileName + "\n" + platName + "\n" + devName + "\n" + 
-			"Device Type: " + getDeviceType(dev.getDeviceInfo(WebCL.CL_DEVICE_TYPE)) + "\n\n" +
-			"Max Work Group Size: " + dev.getDeviceInfo(WebCL.CL_DEVICE_MAX_WORK_GROUP_SIZE) + "\n" +
-			"Compute Units: " + dev.getDeviceInfo(WebCL.CL_DEVICE_MAX_COMPUTE_UNITS) + "\n" +
-			"Global Mem Size: " + ((dev.getDeviceInfo(WebCL.CL_DEVICE_GLOBAL_MEM_SIZE)/1024)/1024) + " MB\n" +
-			"Local Mem Size: " + (dev.getDeviceInfo(WebCL.CL_DEVICE_LOCAL_MEM_SIZE)/1024) + " KB\n\n" +
-			outputStr;		
+			outputStr = "Running Javascript version... "
+			output.innerHTML = outputStr;
+			
+			var startTime = Date.now();
+			
+			for(var y_pos = h; y_pos < hd; y_pos++){
+				for(var x_pos = w; x_pos < wd; x_pos++){
+					non_webcl_raytracer(x_pos, y_pos, pixels.data, traceDepth);
+				}
+			}	
+			
+			var endTime = Date.now();
+			var runTime = (endTime - startTime)/1000;
+			runTime /= runCount;
+			canvasImgCtx.putImageData(pixels, 0, 0);
+			outputStr = "Scene File: " + sceneFileName +
+					"\nPlatform: Javascript Only" +
+					"\n\nImage size: " + (screenWidth*screenHeight) + 
+					" pixels ("	+ screenWidth + " x " + screenHeight + ")" + 
+					"\n\nTrace Depth: " + traceDepth + 
+					"\nRun Count: " + runCount +
+					"\n\nRun Time: " + runTime.toFixed(3) + " seconds (avg of " + runCount + " runs)\nDone.";
+			output.innerHTML = outputStr;
+			
+		}else{	
                  
-		var startTime = Date.now();
-		// Execute (enqueue) kernel
-		for(var i = 0; i < runCount; i++){
-			cmdQueue.enqueueNDRangeKernel(kernel, globalWS.length, [], globalWS, localWS, []);
+			// Setup WebCL context using the default device of the first available platform
+			var platforms = WebCL.getPlatformIDs();
+			//var ctx = WebCL.createContextFromType ([WebCL.CL_CONTEXT_PLATFORM, platforms[platformChosen]], WebCL.CL_DEVICE_TYPE_DEFAULT);
+			var ctx = WebCL.createContextFromType ([WebCL.CL_CONTEXT_PLATFORM, platforms[platformChosen]], WebCL.CL_DEVICE_TYPE_ALL);
+			// Setup buffers
+			var imgSize = screenWidth * screenHeight;
+			outputStr += "Image size: " + imgSize + " pixels ("	+ screenWidth + " x " + screenHeight + ")";
+			
+			// "bufSizeImage = image * 4" broken down
+			// image = (w * h)
+			// 4 = number of chars
+			// implicitly * 1 because char size = 1 * byte
+			var bufSizeImage = imgSize * 4; // size in bytes
+			
+			// m_color = [0.0,0.0,0.0,0.0];	 	16 bytes
+			// m_refl = 0.0; 					4 bytes
+			// m_diff = 0.0; 					4 bytes
+			// m_refr = 0.0; 					4 bytes
+			// m_refr_index = 0.0; 				4 bytes
+			// m_spec = 0.0; 					4 bytes
+			// dummy_3 = 0.0; 					4 bytes
+			// type = 0; 						4 bytes
+			// is_light = false; 				4 bytes change from 1 byte 
+			// normal = [0.0,0.0,0.0,0.0];	 	16 bytes
+			// center = [0.0,0.0,0.0,0.0];	 	16 bytes
+			// depth = 0.0; 					4 bytes
+			// radius = 0.0; 					4 bytes
+			// sq_radius = 0.0; 				4 bytes
+			// r_radius = 0.0; 					4 bytes
+			// 3 @ 16bytes, 12 @ 4bytes = 96bytes			
+			//var bufSizeGlobalPrims = n_primitives * ((3 * 16) + (11 * 4) + (1 * 1));			
+			var bufSizeGlobalPrims = n_primitives * 96;
+			
+			outputStr += "\nBuffer size: " + bufSizeImage + " bytes";
+					 
+			var bufIn = ctx.createBuffer (WebCL.CL_MEM_READ_ONLY, bufSizeImage);
+			var bufOut = ctx.createBuffer (WebCL.CL_MEM_WRITE_ONLY, bufSizeImage);
+			var bufGlobalPrims = ctx.createBuffer (WebCL.CL_MEM_READ_ONLY, bufSizeGlobalPrims);
+			//var bufLocalPrims = ctx.createBuffer (WebCL.CL_MEM_READ_WRITE, bufSizeGlobalPrims);
+			// Create and build program
+			var kernelSrc = loadKernel("clProgramRaytrace");
+			var program = ctx.createProgramWithSource(kernelSrc);
+			var devices = ctx.getContextInfo(WebCL.CL_CONTEXT_DEVICES);
+			try {
+				program.buildProgram ([devices[deviceChosen]], builtInFuncStr);
+			} catch(e) {
+				alert ("Failed to build WebCL program. Error "
+						+ program.getProgramBuildInfo (devices[deviceChosen], WebCL.CL_PROGRAM_BUILD_STATUS)
+						+ ":  " + program.getProgramBuildInfo (devices[deviceChosen], WebCL.CL_PROGRAM_BUILD_LOG));
+				throw e;
+			}
+			// Create kernel and set arguments
+			var kernel = program.createKernel ("raytracer_kernel");
+			kernel.setKernelArg (0, bufIn);
+			kernel.setKernelArg (1, bufOut);
+			kernel.setKernelArg (2, screenWidth, WebCL.types.UINT);
+			kernel.setKernelArg (3, screenHeight, WebCL.types.UINT);
+			kernel.setKernelArg (4, parseFloat(camera_x), WebCL.types.FLOAT);
+			kernel.setKernelArg (5, parseFloat(camera_y), WebCL.types.FLOAT);
+			kernel.setKernelArg (6, parseFloat(camera_z), WebCL.types.FLOAT);
+			kernel.setKernelArg (7, parseFloat(viewport_x), WebCL.types.FLOAT);
+			kernel.setKernelArg (8, parseFloat(viewport_y), WebCL.types.FLOAT);
+			kernel.setKernelArg (9, bufGlobalPrims);			
+			kernel.setKernelArg (10, n_primitives, WebCL.types.INT);
+			kernel.setKernelArgLocal (11, bufSizeGlobalPrims);	// requires the size for the local buffer ?	! ?	
+			// Create command queue using the first available device
+			var cmdQueue = ctx.createCommandQueue (devices[deviceChosen], 0);
+			// Write the buffer to OpenCL device memory
+			cmdQueue.enqueueWriteBuffer (bufIn, false, 0, bufSizeImage, pixels.data, []);
+			// added
+			cmdQueue.enqueueWriteBuffer (bufGlobalPrims, false, 0, bufSizeGlobalPrims, prim_list_float32View, []);
+			// Init ND-range 
+			var localWS = [workItemSize[0],workItemSize[1]];  
+			var globalWS = [Math.ceil (screenWidth / localWS[0]) * localWS[0], 
+							Math.ceil (screenHeight / localWS[1]) * localWS[1]];
+					 
+			outputStr += "\nWork group dimensions: " + globalWS.length;
+			for (var i = 0; i < globalWS.length; ++i)
+				outputStr += "\nGlobal work item size[" + i + "]: " + globalWS[i];
+			for (var i = 0; i < localWS.length; ++i)
+				outputStr += "\nLocal work item size[" + i + "]: " + localWS[i];				
+				
+			var dev = devices[deviceChosen];
+			var platName = "Platform: " +
+							dev.getDeviceInfo(WebCL.CL_DEVICE_PLATFORM).getPlatformInfo(WebCL.CL_PLATFORM_NAME);			
+			platName = platName.replace(/ +/g, " ");
+			var devName = "Device: " + dev.getDeviceInfo(WebCL.CL_DEVICE_NAME);			
+			devName = devName.replace(/ +/g, " ");			
+			
+			outputStr =  "Scene File: " + sceneFileName + "\n" + platName + "\n" + devName + "\n" + 
+				"Device Type: " + getDeviceType(dev.getDeviceInfo(WebCL.CL_DEVICE_TYPE)) + "\n\n" +
+				"Max Work Group Size: " + dev.getDeviceInfo(WebCL.CL_DEVICE_MAX_WORK_GROUP_SIZE) + "\n" +
+				"Compute Units: " + dev.getDeviceInfo(WebCL.CL_DEVICE_MAX_COMPUTE_UNITS) + "\n" +
+				"Global Mem Size: " + ((dev.getDeviceInfo(WebCL.CL_DEVICE_GLOBAL_MEM_SIZE)/1024)/1024) + " MB\n" +
+				"Local Mem Size: " + (dev.getDeviceInfo(WebCL.CL_DEVICE_LOCAL_MEM_SIZE)/1024) + " KB\n\n" +
+				outputStr;		
+					 
+			var startTime = Date.now();
+			// Execute (enqueue) kernel
+			for(var i = 0; i < runCount; i++){
+				cmdQueue.enqueueNDRangeKernel(kernel, globalWS.length, [], globalWS, localWS, []);
+			}
+			// Read the result buffer from OpenCL device
+			cmdQueue.enqueueReadBuffer (bufOut, false, 0, bufSizeImage, pixels.data, []);
+			cmdQueue.finish (); //Finish all the operations
+			var endTime = Date.now();
+			var runTime = (endTime - startTime)/1000;
+			runTime /= runCount;
+			canvasImgCtx.putImageData(pixels, 0, 0);
+			outputStr += "\nTrace Depth: " + traceDepth + 
+				"\nRun Count: " + runCount + 
+				"\nRun Time: " + runTime.toFixed(3) + 
+				" sec (avg " + runCount + " runs)\nDone.";
+			output.innerHTML = outputStr;
 		}
-		// Read the result buffer from OpenCL device
-		cmdQueue.enqueueReadBuffer (bufOut, false, 0, bufSizeImage, pixels.data, []);
-		cmdQueue.finish (); //Finish all the operations
-		var endTime = Date.now();
-		var runTime = (endTime - startTime)/1000;
-		runTime /= runCount;
-		canvasImgCtx.putImageData(pixels, 0, 0);
-		outputStr += "\nRun Time: " + runTime.toFixed(3) + " seconds (avg of " + runCount + " runs)\nDone.";
-		output.innerHTML = outputStr;
 	} catch(e) {
 		document.getElementById("output").innerHTML += "<h3>ERROR:</h3><pre style=\"color:red;\">" + e.message + "</pre>";
 		throw e;
