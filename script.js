@@ -61,28 +61,41 @@ function setupImageRadios(){
 }
 
 function setupDeviceRadios(){
-	var deviceRadioStr = "<form name='chooseDevice'><span class='header'>Choose&nbsp;Device:</span><br/><br/>" + 
-				"<b>Javascript Only</b><br>" + 
-				"&nbsp;<input type='radio' value='99_0' name='device' id='device99_0'>0. Javascript Only (60+ sec runtimes)<br/><br/>";
+	var deviceRadioStr = "<form name='chooseDevice'>" +
+				"<table width='100%' border='0' cellspacing='0' cellpadding='0'>" + 
+				"<tr><td colspan='3' class='header'>Choose Device:</td></tr>" +
+				"<tr><td colspan='3' class='adjustTable'><img src='Graphics/spacer.png' width='2' height='1'></td></tr>" +
+				"<tr><td colspan='3' class='adjustTable'><b>Javascript Only</b></td></tr>" +
+				"<tr><td class='adjustTable' width='2'><img src='Graphics/spacer.png' width='2' height='1'></td>" +
+				"<td class='adjustTable'><input type='radio' value='99_0' name='device' id='device99_0'></td>" +
+				"<td nowrap class='adjustTable'>0. Javascript Only (60+ sec runtime)</td></tr>" +
+				"<tr><td colspan='3' class='adjustTable'><img src='Graphics/spacer.png' width='2' height='1'></td></tr>";
 	try {			
 		if (checkWebCL()==false) {
 			return false;
 		}
 		
-	var platforms = WebCL.getPlatformIDs ();
-	for (var i in platforms) {
-		var plat = platforms[i];
-		var platformName = plat.getPlatformInfo (WebCL.CL_PLATFORM_NAME);
-		deviceRadioStr += "<b>"+ i +".&nbsp;"+ platformName + "</b><br>";
-		
+		var platforms = WebCL.getPlatformIDs ();
+		for (var i in platforms) {
+			var plat = platforms[i];
+			var platformName = plat.getPlatformInfo (WebCL.CL_PLATFORM_NAME);
+			deviceRadioStr += "<tr>" +
+							"<td colspan='3' class='adjustTable'><b>"+ i +".&nbsp;"+ platformName + "</b></td>" +
+							"</tr>";		
 			var devices = plat.getDeviceIDs (WebCL.CL_DEVICE_TYPE_ALL);
 			for (var j in devices) {
 				var dev = devices[j];
 				var deviceName = dev.getDeviceInfo(WebCL.CL_DEVICE_NAME);
-				deviceRadioStr += "&nbsp;<input type='radio' value='"
-					+ i + "_" + j +	"' name='device' id='device"+ i + "_" + j +"'>"+j+". "+ deviceName +"<br/>";
+				deviceRadioStr += "<tr>" +
+								"<td class='adjustTable' width='2'><img src='Graphics/spacer.png' width='2' height='1'></td>" +								
+								"<td class='adjustTable'><input type='radio' value='"+ i + "_" + j +"' name='device' id='device"+ i + "_" + j +"'></td>" +
+								"<td nowrap class='adjustTable'>"+j+". "+ deviceName + "</td></tr>";
 			}
-			deviceRadioStr += "<br/>";
+			if(i < platforms.length - 1){
+				deviceRadioStr += "<tr>" +
+							"<td colspan='3' class='adjustTable'><img src='Graphics/spacer.png' width='2' height='1'></td>" +
+							"</tr>";
+			}
 		}
 	} catch(e) {
 		var output = document.getElementById ("output");
@@ -91,7 +104,7 @@ function setupDeviceRadios(){
 	}      
 	// String deviceRadioStr is printed out to div element output
 	var divDeviceRadios = document.getElementById ("divDeviceRadios");
-	divDeviceRadios.innerHTML = deviceRadioStr + "</form>";		
+	divDeviceRadios.innerHTML = deviceRadioStr + "</table></form>";		
 }
 
 function setImagesToCanvas(img, canName){
@@ -525,11 +538,8 @@ function CL_ratrace (loadPrims) {
 	builtInFuncStr = "";	
 	platformChosen = 0;
 	deviceChosen = 0;
-	camera_x = 0.0;
-	camera_y = 0.0;
-	camera_z = -7.0;
 	viewport_x = 6.0;
-	viewport_y = 4.5;
+	viewport_y = 4.5;	
 	screenWidth = 800;
 	screenHeight = 600;
 	workItemSize = [16,8];
@@ -556,7 +566,12 @@ function CL_ratrace (loadPrims) {
 	
 	checkBuiltInFunctionValue();
 	
-	if(loadPrims==1){createPrimList();}	// load prims from file
+	if(loadPrims==1){
+		createPrimList();		
+		camera_x = 0.0;
+		camera_y = 0.0;
+		camera_z = -7.0;		
+	}	// load prims from file
 	
 	try {
 		// Get pixel data from canvas
